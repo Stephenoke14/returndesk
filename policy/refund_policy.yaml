@@ -1,0 +1,31 @@
+# ReturnDesk refund policy
+# Edit these values to change behaviour; no code changes needed.
+# Rules are checked in a fixed order and the first match decides (see app/rules/engine.py).
+
+version: 1
+currency: GBP
+
+# Claims are only accepted this many days after delivery
+claim_window_days: 30
+
+# Orders worth more than this are never refunded automatically; a person decides
+auto_refund_max_gbp: 40.00
+
+# The damage classifier must be at least this confident to act on its label
+min_damage_confidence: 0.85
+
+# Customers with this many claims or more in the window are sent for review
+repeat_claims:
+  max_claims: 3
+  window_days: 90
+
+# Damage classes from the vision model and how the policy treats them
+damage_classes:
+  refundable: [broken_item, wet_stained, wrong_item]
+  review: [crushed_box]          # packaging damage only - item may be fine
+  not_damaged: [no_visible_damage]
+
+# Never auto-reject a customer whose message is rated this urgent; send to a person
+escalate_rejections_at_urgency: high
+
+# policy owner: stephenoke14 / mrhills
