@@ -1,0 +1,13 @@
+# ReturnDesk - files kept out of the Docker image
+# Author: stephenoke14 | mrhills
+.venv
+.git
+.env
+__pycache__
+*.pyc
+data
+models
+experiments
+tests
+docs
+wordpress-plugin
