@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Project
+.env
+data/raw/*
+data/processed/*
+models/*
+app tests experiments data models policy wordpress-plugin docs -type d -empty -exec touch {}/.gitkeep \;*/.gitkeep
