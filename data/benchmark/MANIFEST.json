@@ -1,0 +1,65 @@
+{
+  "benchmark": "ReturnDesk",
+  "version": "1.0",
+  "seed": 4060336691,
+  "namespace": "returndesk-bench/stephenoke14/mrhills/v1",
+  "engine": "returndesk-rules/1.0 (stephenoke14, mrhills)",
+  "policy_sha256": "d1dce1168f27f41583b9611ce18cd0622551d6c2a75ac1a78ba1296f3bddf67a",
+  "files": {
+    "claims.jsonl": {
+      "rows": 1000,
+      "sha256": "4ad42adf6ecf85cdd3a7d5534cb62311cad6750c4494cf7278af3dcda257c1c7"
+    },
+    "dev.jsonl": {
+      "rows": 200,
+      "sha256": "59d734825c605baab536b3d618c82a67551f6e34bd68078f4f620df299018430"
+    },
+    "test.jsonl": {
+      "rows": 800,
+      "sha256": "c97d5f783498c47cea4859a0a0c3649b68726166368bfd2e34a78af7c7147298"
+    },
+    "golden.jsonl": {
+      "rows": 42,
+      "sha256": "6b1b7cc43b5ec8fa71eaca8ac668cfdb29e9d16cdd660616a5093e387747591c"
+    }
+  },
+  "categories": {
+    "standard": 500,
+    "boundary": 120,
+    "manipulation": 100,
+    "conflict": 100,
+    "injection": 120,
+    "urgent_invalid": 60
+  },
+  "outcomes": {
+    "refund": 328,
+    "escalate": 486,
+    "reject": 186
+  },
+  "outcomes_by_split": {
+    "dev": {
+      "refund": 73,
+      "escalate": 96,
+      "reject": 31
+    },
+    "test": {
+      "refund": 255,
+      "reject": 155,
+      "escalate": 390
+    }
+  },
+  "rules": {
+    "R12_auto_refund": 328,
+    "R10_packaging_only": 76,
+    "R04_outside_window": 69,
+    "R11_high_value": 98,
+    "R05_repeat_claimer": 70,
+    "R13_urgent_review": 58,
+    "R09_no_visible_damage": 102,
+    "R01_injection_flagged": 120,
+    "R06_no_photo": 16,
+    "R07_low_confidence": 48,
+    "R03_not_delivered": 9,
+    "R02_customer_mismatch": 6
+  }
+}
