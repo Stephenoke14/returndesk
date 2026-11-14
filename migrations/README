@@ -1,0 +1,3 @@
+ReturnDesk migrations (Alembic).
+  New migration:  uv run alembic revision --autogenerate -m "describe change"
+  Apply:          uv run alembic upgrade head

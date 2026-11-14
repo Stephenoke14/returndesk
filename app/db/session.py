@@ -18,3 +18,8 @@ def database_is_up() -> bool:
         return True
     except SQLAlchemyError:
         return False
+
+
+from sqlalchemy.orm import sessionmaker  # noqa: E402
+
+SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
