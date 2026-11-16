@@ -1,26 +1,26 @@
 {
   "benchmark": "ReturnDesk",
-  "version": "1.0",
+  "version": "1.1",
   "seed": 4060336691,
   "namespace": "returndesk-bench/stephenoke14/mrhills/v1",
-  "engine": "returndesk-rules/1.0 (stephenoke14, mrhills)",
-  "policy_sha256": "d1dce1168f27f41583b9611ce18cd0622551d6c2a75ac1a78ba1296f3bddf67a",
+  "engine": "returndesk-rules/1.1 (stephenoke14, mrhills)",
+  "policy_sha256": "f998d4a86b2bab2d3cbad83578ec218b447ba608c0a495a8499df8ad8ba3f1ca",
   "files": {
     "claims.jsonl": {
       "rows": 1000,
-      "sha256": "4ad42adf6ecf85cdd3a7d5534cb62311cad6750c4494cf7278af3dcda257c1c7"
+      "sha256": "9aede25b882d8d249b23aee24faf0c79435cc35c8146a091ee11ff3f8e618889"
     },
     "dev.jsonl": {
       "rows": 200,
-      "sha256": "59d734825c605baab536b3d618c82a67551f6e34bd68078f4f620df299018430"
+      "sha256": "f6dfe577547ed9da604c3f4c27c107635352ad4d5787e94bbb76f38f5a3334da"
     },
     "test.jsonl": {
       "rows": 800,
-      "sha256": "c97d5f783498c47cea4859a0a0c3649b68726166368bfd2e34a78af7c7147298"
+      "sha256": "475860cc6ab607f0be657dea365651083f4498a434f646c393445a2ddbd8f07d"
     },
     "golden.jsonl": {
       "rows": 42,
-      "sha256": "6b1b7cc43b5ec8fa71eaca8ac668cfdb29e9d16cdd660616a5093e387747591c"
+      "sha256": "37fd4fb3fdb5c2707f9da402bc38af023e55584ffe37ab25c637f35929050432"
     }
   },
   "categories": {
@@ -32,34 +32,35 @@
     "urgent_invalid": 60
   },
   "outcomes": {
-    "refund": 328,
-    "escalate": 486,
-    "reject": 186
+    "refund": 293,
+    "escalate": 495,
+    "reject": 212
   },
   "outcomes_by_split": {
     "dev": {
-      "refund": 73,
-      "escalate": 96,
-      "reject": 31
+      "escalate": 100,
+      "refund": 61,
+      "reject": 39
     },
     "test": {
-      "refund": 255,
-      "reject": 155,
-      "escalate": 390
+      "refund": 232,
+      "escalate": 395,
+      "reject": 173
     }
   },
   "rules": {
-    "R12_auto_refund": 328,
-    "R10_packaging_only": 76,
-    "R04_outside_window": 69,
-    "R11_high_value": 98,
-    "R05_repeat_claimer": 70,
-    "R13_urgent_review": 58,
-    "R09_no_visible_damage": 102,
+    "R13_auto_refund": 293,
+    "R11_packaging_only": 90,
+    "R04_outside_window": 73,
+    "R12_high_value": 80,
+    "R10_no_visible_damage": 118,
+    "R03_not_delivered": 19,
     "R01_injection_flagged": 120,
-    "R06_no_photo": 16,
-    "R07_low_confidence": 48,
-    "R03_not_delivered": 9,
-    "R02_customer_mismatch": 6
+    "R08_low_confidence": 47,
+    "R14_urgent_review": 53,
+    "R07_no_photo": 16,
+    "R06_wrong_item_claim": 36,
+    "R05_repeat_claimer": 53,
+    "R02_customer_mismatch": 2
   }
 }

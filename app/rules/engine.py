@@ -12,15 +12,16 @@ Rules run in a fixed order; the first rule that matches decides:
     R03 not_delivered         -> reject
     R04 outside_window        -> reject
     R05 repeat_claimer        -> escalate
-    R06 no_photo              -> escalate
-    R07 low_confidence        -> escalate
-    R08 unknown_damage_class  -> escalate
-    R09 no_visible_damage     -> reject
-    R10 packaging_only        -> escalate
-    R11 high_value            -> escalate
-    R12 auto_refund           -> refund (full order value)
+    R06 wrong_item_claim      -> escalate
+    R07 no_photo              -> escalate
+    R08 low_confidence        -> escalate
+    R09 unknown_damage_class  -> escalate
+    R10 no_visible_damage     -> reject
+    R11 packaging_only        -> escalate
+    R12 high_value            -> escalate
+    R13 auto_refund           -> refund (full order value)
 
-After that, R13 urgent_review turns a reject into escalate when the customer's
+After that, R14 urgent_review turns a reject into escalate when the customer's
 message is rated at or above the policy's urgency level.
 """
 
@@ -30,8 +31,11 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from decimal import Decimal
 from enum import Enum
+from typing import Literal
 
 from app.rules.policy import Policy, Urgency, load_policy
+
+ClaimType = Literal["damage", "wrong_item"]
 
 URGENCY_RANK = {"low": 0, "medium": 1, "high": 2}
 
@@ -56,6 +60,7 @@ class ClaimFacts:
     damage_confidence: float | None
     urgency: Urgency = "low"
     injection_flagged: bool = False
+    claim_type: ClaimType = "damage"
 
 
 @dataclass(frozen=True)
@@ -75,7 +80,7 @@ Check = Callable[[ClaimFacts, Policy], "tuple[Outcome, str] | None"]
 class RulesEngine:
     """Applies a Policy to ClaimFacts."""
 
-    ENGINE_ID = "returndesk-rules/1.0 (stephenoke14, mrhills)"
+    ENGINE_ID = "returndesk-rules/1.1 (stephenoke14, mrhills)"
 
     def __init__(self, policy: Policy | None = None) -> None:
         self.policy = policy or load_policy()
@@ -85,19 +90,20 @@ class RulesEngine:
             ("R03_not_delivered", self._not_delivered),
             ("R04_outside_window", self._outside_window),
             ("R05_repeat_claimer", self._repeat_claimer),
-            ("R06_no_photo", self._no_photo),
-            ("R07_low_confidence", self._low_confidence),
-            ("R08_unknown_damage_class", self._unknown_class),
-            ("R09_no_visible_damage", self._no_damage),
-            ("R10_packaging_only", self._packaging_only),
-            ("R11_high_value", self._high_value),
+            ("R06_wrong_item_claim", self._wrong_item),
+            ("R07_no_photo", self._no_photo),
+            ("R08_low_confidence", self._low_confidence),
+            ("R09_unknown_damage_class", self._unknown_class),
+            ("R10_no_visible_damage", self._no_damage),
+            ("R11_packaging_only", self._packaging_only),
+            ("R12_high_value", self._high_value),
         ]
 
     # ---- public API -------------------------------------------------------
 
     def evaluate(self, facts: ClaimFacts) -> RuleDecision:
         trace: list[str] = []
-        outcome, rule_id, reason = Outcome.REFUND, "R12_auto_refund", ""
+        outcome, rule_id, reason = Outcome.REFUND, "R13_auto_refund", ""
         for rule_id_candidate, check in self._rules:
             trace.append(rule_id_candidate)
             hit = check(facts, self.policy)
@@ -106,15 +112,15 @@ class RulesEngine:
                 rule_id = rule_id_candidate
                 break
         else:
-            trace.append("R12_auto_refund")
+            trace.append("R13_auto_refund")
             reason = (f"Refundable damage ({facts.damage_class}) on a "
                       f"£{facts.order_value_gbp} order within policy limits")
 
         if outcome is Outcome.REJECT and self._is_urgent(facts):
-            trace.append("R13_urgent_review")
+            trace.append("R14_urgent_review")
             reason = (f"Would be rejected by {rule_id} ({reason}), but the message is "
                       f"rated {facts.urgency} urgency, so a person reviews it")
-            outcome, rule_id = Outcome.ESCALATE, "R13_urgent_review"
+            outcome, rule_id = Outcome.ESCALATE, "R14_urgent_review"
 
         refund = facts.order_value_gbp if outcome is Outcome.REFUND else None
         return RuleDecision(outcome, rule_id, reason, refund, tuple(trace),
@@ -156,6 +162,12 @@ class RulesEngine:
         if f.prior_claims_in_window >= rc.max_claims:
             return Outcome.ESCALATE, (f"{f.prior_claims_in_window} claims in the last "
                     f"{rc.window_days} days (limit {rc.max_claims})")
+        return None
+
+    @staticmethod
+    def _wrong_item(f: ClaimFacts, p: Policy):
+        if f.claim_type == "wrong_item":
+            return Outcome.ESCALATE, "Wrong-item claim; a person checks the photo against the order"
         return None
 
     @staticmethod

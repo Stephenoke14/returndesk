@@ -2,7 +2,7 @@
 # Edit these values to change behaviour; no code changes needed.
 # Rules are checked in a fixed order and the first match decides (see app/rules/engine.py).
 
-version: 1
+version: 2
 currency: GBP
 
 # Claims are only accepted this many days after delivery
@@ -19,9 +19,11 @@ repeat_claims:
   max_claims: 3
   window_days: 90
 
-# Damage classes from the vision model and how the policy treats them
+# Damage classes from the vision model and how the policy treats them.
+# "Wrong item" is not a photo class: it cannot be seen without knowing the order,
+# so wrong-item claims are always escalated for a person to check (rule R06).
 damage_classes:
-  refundable: [broken_item, wet_stained, wrong_item]
+  refundable: [broken_item, wet_stained]
   review: [crushed_box]          # packaging damage only - item may be fine
   not_damaged: [no_visible_damage]
 

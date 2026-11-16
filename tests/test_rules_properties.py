@@ -27,6 +27,7 @@ claims = st.builds(
     damage_confidence=st.one_of(st.none(), st.floats(min_value=0, max_value=1)),
     urgency=st.sampled_from(["low", "medium", "high"]),
     injection_flagged=st.booleans(),
+    claim_type=st.sampled_from(["damage", "wrong_item"]),
 )
 
 
@@ -48,7 +49,7 @@ def test_invariants(f: ClaimFacts) -> None:
 
     # Safety: these conditions can never end in an automatic refund
     if (f.injection_flagged or not f.customer_matches_order or not f.order_delivered
-            or not f.has_photo
+            or not f.has_photo or f.claim_type == "wrong_item"
             or f.prior_claims_in_window >= POLICY.repeat_claims.max_claims
             or f.damage_class not in POLICY.damage_classes.refundable):
         assert d.outcome is not Outcome.REFUND

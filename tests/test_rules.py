@@ -27,21 +27,23 @@ GOOD = ClaimFacts(
 @pytest.mark.parametrize(
     ("changes", "outcome", "rule"),
     [
-        ({}, Outcome.REFUND, "R12_auto_refund"),
+        ({}, Outcome.REFUND, "R13_auto_refund"),
         ({"injection_flagged": True}, Outcome.ESCALATE, "R01_injection_flagged"),
         ({"customer_matches_order": False}, Outcome.REJECT, "R02_customer_mismatch"),
         ({"order_delivered": False}, Outcome.REJECT, "R03_not_delivered"),
         ({"days_since_delivery": 31}, Outcome.REJECT, "R04_outside_window"),
         ({"days_since_delivery": None}, Outcome.ESCALATE, "R04_outside_window"),
         ({"prior_claims_in_window": 3}, Outcome.ESCALATE, "R05_repeat_claimer"),
-        ({"has_photo": False}, Outcome.ESCALATE, "R06_no_photo"),
-        ({"damage_confidence": 0.60}, Outcome.ESCALATE, "R07_low_confidence"),
-        ({"damage_class": None}, Outcome.ESCALATE, "R07_low_confidence"),
-        ({"damage_class": "on_fire"}, Outcome.ESCALATE, "R08_unknown_damage_class"),
-        ({"damage_class": "no_visible_damage"}, Outcome.REJECT, "R09_no_visible_damage"),
-        ({"damage_class": "crushed_box"}, Outcome.ESCALATE, "R10_packaging_only"),
-        ({"order_value_gbp": Decimal("40.01")}, Outcome.ESCALATE, "R11_high_value"),
-        ({"days_since_delivery": 31, "urgency": "high"}, Outcome.ESCALATE, "R13_urgent_review"),
+        ({"claim_type": "wrong_item"}, Outcome.ESCALATE, "R06_wrong_item_claim"),
+        ({"has_photo": False}, Outcome.ESCALATE, "R07_no_photo"),
+        ({"damage_confidence": 0.60}, Outcome.ESCALATE, "R08_low_confidence"),
+        ({"damage_class": None}, Outcome.ESCALATE, "R08_low_confidence"),
+        ({"damage_class": "wrong_item"}, Outcome.ESCALATE, "R09_unknown_damage_class"),
+        ({"damage_class": "on_fire"}, Outcome.ESCALATE, "R09_unknown_damage_class"),
+        ({"damage_class": "no_visible_damage"}, Outcome.REJECT, "R10_no_visible_damage"),
+        ({"damage_class": "crushed_box"}, Outcome.ESCALATE, "R11_packaging_only"),
+        ({"order_value_gbp": Decimal("40.01")}, Outcome.ESCALATE, "R12_high_value"),
+        ({"days_since_delivery": 31, "urgency": "high"}, Outcome.ESCALATE, "R14_urgent_review"),
     ],
 )
 def test_each_rule(changes, outcome, rule) -> None:
@@ -61,8 +63,8 @@ def test_boundaries_are_inclusive_where_policy_says_so() -> None:
 def test_refund_amount_and_audit_fields() -> None:
     d = ENGINE.evaluate(GOOD)
     assert d.refund_amount_gbp == GOOD.order_value_gbp
-    assert d.trace[-1] == "R12_auto_refund"
-    assert d.policy_version == 1
+    assert d.trace[-1] == "R13_auto_refund"
+    assert d.policy_version == 2
     # provenance check - stephenoke14 / mrhills
     assert "returndesk-rules" in d.engine
 

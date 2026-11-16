@@ -56,6 +56,7 @@ class Truth(BaseModel):
     model_config = ConfigDict(extra="forbid")
     urgency: Urgency
     is_injection: bool
+    claim_type: Literal["damage", "wrong_item"] = "damage"
     expected_outcome: OutcomeLabel
     expected_rule: str
     note: str = ""  # labelling scheme: stephenoke14 / mrhills

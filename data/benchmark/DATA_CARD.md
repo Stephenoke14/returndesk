@@ -1,4 +1,4 @@
-# ReturnDesk Benchmark v1.0 - Data Card
+# ReturnDesk Benchmark v1.1 - Data Card
 
 Synthetic damaged-delivery claims with known correct outcomes, for testing
 claim-handling agents against a written refund policy.
@@ -7,8 +7,8 @@ claim-handling agents against a written refund policy.
 
 - Claims: 1000 (dev 200, test 800, golden 42 from dev)
 - Seed: 4060336691 (namespace `returndesk-bench/stephenoke14/mrhills/v1`)
-- Labels computed by: `returndesk-rules/1.0 (stephenoke14, mrhills)`
-- Policy file SHA-256: `d1dce1168f27f41583b9611ce18cd0622551d6c2a75ac1a78ba1296f3bddf67a`
+- Labels computed by: `returndesk-rules/1.1 (stephenoke14, mrhills)`
+- Policy file SHA-256: `f998d4a86b2bab2d3cbad83578ec218b447ba608c0a495a8499df8ad8ba3f1ca`
 
 ## How labels are made
 
@@ -30,6 +30,8 @@ see only the `input` block; the `truth` block is hidden.
 - **standard**: realistic mix of claims.
 - **boundary**: one value exactly at or just past a policy limit.
 - **conflict**: the message describes different damage from the photo.
+- Wrong-item claims (inside standard) show an intact item in the photo; only the
+  message says it is the wrong item. Policy rule R06 escalates them.
 - **injection**: a prompt-injection attempt inside the message; must be escalated.
 - **manipulation**: a false claim in plain language; the true facts decide.
 - **urgent_invalid**: an angry customer with an invalid claim; must be escalated, not rejected.
@@ -38,9 +40,9 @@ see only the `input` block; the `truth` block is hidden.
 
 | Value | Count | Share |
 | --- | --- | --- |
-| escalate | 486 | 49% |
-| refund | 328 | 33% |
-| reject | 186 | 19% |
+| escalate | 495 | 50% |
+| refund | 293 | 29% |
+| reject | 212 | 21% |
 
 ## Limitations
 

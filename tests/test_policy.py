@@ -12,7 +12,7 @@ def _raw() -> dict:
 
 
 def test_shipped_policy_is_valid() -> None:
-    assert load_policy().version == 1
+    assert load_policy().version == 2
 
 
 @pytest.mark.parametrize(
